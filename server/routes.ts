@@ -17,23 +17,38 @@ export function registerRoutes(app: Express) {
       const admin = await storage.verifyAdmin(username, password);
       if (admin) {
         req.session.adminId = admin.id;
-        res.json({ success: true, username: admin.username });
+        req.session.save((err) => {
+          if (err) {
+            console.error('[Auth] Session save error:', err);
+            return res.status(500).json({ error: "Failed to save session" });
+          }
+          console.log('[Auth] Session saved successfully. SessionID:', req.sessionID, 'AdminID:', admin.id);
+          res.json({ success: true, username: admin.username });
+        });
       } else {
         res.status(401).json({ error: "Invalid credentials" });
       }
     } catch (error: any) {
+      console.error('[Auth] Login error:', error);
       res.status(500).json({ error: error.message });
     }
   });
   
   app.post("/api/auth/logout", async (req, res) => {
-    req.session.destroy(() => {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('[Auth] Logout error:', err);
+        return res.status(500).json({ error: "Failed to destroy session" });
+      }
+      console.log('[Auth] Session destroyed successfully');
       res.json({ success: true });
     });
   });
   
   app.get("/api/auth/check", async (req, res) => {
-    if (req.session.adminId) {
+    const isAdmin = !!req.session.adminId;
+    console.log('[Auth] Check request - SessionID:', req.sessionID, 'AdminID:', req.session.adminId, 'IsAdmin:', isAdmin);
+    if (isAdmin) {
       res.json({ isAdmin: true });
     } else {
       res.json({ isAdmin: false });
