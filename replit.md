@@ -36,7 +36,7 @@ Do NOT use specific domain names in `allowedHosts` as Replit URLs change. Always
 
 **Recent Changes (October 31, 2025):**
 - **Unified Admin System Implementation:**
-  - Implemented session-based authentication with admin login (username: admin, password: RutgersChessClub@123)
+  - Implemented session-based authentication with admin login (username: administrator, password: RutgersChess@123)
   - Created unified event schema and API endpoint (`/api/events/unified`) consolidating all event types
   - Built comprehensive UnifiedEventModal supporting all event fields (title, date, location, time, description, images, recurring, participants, rounds, rating, winners)
   - Migrated all three event pages (Past, Upcoming, Calendar) to fetch from unified endpoint with smart client-side filtering

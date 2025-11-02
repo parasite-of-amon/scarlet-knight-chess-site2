@@ -6,8 +6,8 @@ The website includes a comprehensive admin authentication system with full CRUD 
 
 ### Admin Credentials
 
-- **Username:** `admin`
-- **Password:** `admin123`
+- **Username:** `administrator`
+- **Password:** `RutgersChess@123`
 
 ### Accessing Admin Dashboard
 
