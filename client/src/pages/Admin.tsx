@@ -33,7 +33,7 @@ const Admin = () => {
   });
 
   const deleteEventMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string | number) => {
       await apiRequest(`/api/events/unified/${id}`, { method: 'DELETE' });
     },
     onSuccess: () => {
@@ -49,7 +49,7 @@ const Admin = () => {
   });
 
   const deleteSponsorMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string | number) => {
       await apiRequest(`/api/sponsors/${id}`, { method: 'DELETE' });
     },
     onSuccess: () => {
@@ -66,13 +66,13 @@ const Admin = () => {
     setEventModalOpen(true);
   };
 
-  const handleDeleteEvent = (id: number) => {
+  const handleDeleteEvent = (id: string | number) => {
     if (confirm('Are you sure you want to delete this event?')) {
       deleteEventMutation.mutate(id);
     }
   };
 
-  const handleDeleteSponsor = (id: number) => {
+  const handleDeleteSponsor = (id: string | number) => {
     if (confirm('Are you sure you want to delete this sponsor?')) {
       deleteSponsorMutation.mutate(id);
     }

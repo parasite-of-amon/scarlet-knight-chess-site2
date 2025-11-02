@@ -169,7 +169,7 @@ export class SupabaseStorage implements IStorage {
     };
   }
 
-  async updateUnifiedEvent(id: number, updates: Partial<InsertUnifiedEvent>): Promise<void> {
+  async updateUnifiedEvent(id: string | number, updates: Partial<InsertUnifiedEvent>): Promise<void> {
     const updateData: any = {};
 
     if (updates.title !== undefined) updateData.title = updates.title;
@@ -190,7 +190,7 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
   }
 
-  async deleteUnifiedEvent(id: number): Promise<void> {
+  async deleteUnifiedEvent(id: string | number): Promise<void> {
     const { error } = await supabase
       .from('events')
       .delete()
@@ -242,7 +242,7 @@ export class SupabaseStorage implements IStorage {
     };
   }
 
-  async updateSponsor(id: number, updates: Partial<InsertSponsor>): Promise<void> {
+  async updateSponsor(id: string | number, updates: Partial<InsertSponsor>): Promise<void> {
     const updateData: any = {};
 
     if (updates.name !== undefined) updateData.name = updates.name;
@@ -259,7 +259,7 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
   }
 
-  async deleteSponsor(id: number): Promise<void> {
+  async deleteSponsor(id: string | number): Promise<void> {
     const { error } = await supabase
       .from('sponsors')
       .delete()
@@ -357,7 +357,7 @@ export class SupabaseStorage implements IStorage {
     };
   }
 
-  async updateAboutContent(id: number, updates: Partial<InsertAboutContent>): Promise<void> {
+  async updateAboutContent(id: string | number, updates: Partial<InsertAboutContent>): Promise<void> {
     const { data: existing } = await supabase
       .from('page_content')
       .select('*')
@@ -520,27 +520,27 @@ export class SupabaseStorage implements IStorage {
     };
   }
 
-  async updateUpcomingEvent(id: number, updates: Partial<InsertUpcomingEvent>): Promise<void> {
+  async updateUpcomingEvent(id: string | number, updates: Partial<InsertUpcomingEvent>): Promise<void> {
     await this.updateUnifiedEvent(id, updates);
   }
 
-  async updatePastEvent(id: number, updates: Partial<InsertPastEvent>, winners?: InsertPastEventWinner[]): Promise<void> {
+  async updatePastEvent(id: string | number, updates: Partial<InsertPastEvent>, winners?: InsertPastEventWinner[]): Promise<void> {
     await this.updateUnifiedEvent(id, updates);
   }
 
-  async updateCalendarEvent(id: number, updates: Partial<InsertCalendarEvent>): Promise<void> {
+  async updateCalendarEvent(id: string | number, updates: Partial<InsertCalendarEvent>): Promise<void> {
     await this.updateUnifiedEvent(id, updates);
   }
 
-  async deleteUpcomingEvent(id: number): Promise<void> {
+  async deleteUpcomingEvent(id: string | number): Promise<void> {
     await this.deleteUnifiedEvent(id);
   }
 
-  async deletePastEvent(id: number): Promise<void> {
+  async deletePastEvent(id: string | number): Promise<void> {
     await this.deleteUnifiedEvent(id);
   }
 
-  async deleteCalendarEvent(id: number): Promise<void> {
+  async deleteCalendarEvent(id: string | number): Promise<void> {
     await this.deleteUnifiedEvent(id);
   }
 

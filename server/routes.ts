@@ -63,7 +63,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       const validated = insertUnifiedEventSchema.partial().parse(req.body);
       await storage.updateUnifiedEvent(id, validated);
       res.json({ success: true });
@@ -77,7 +77,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       await storage.deleteUnifiedEvent(id);
       res.json({ success: true });
     } catch (error: any) {
@@ -108,7 +108,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       const validated = insertSponsorSchema.partial().parse(req.body);
       await storage.updateSponsor(id, validated);
       res.json({ success: true });
@@ -122,7 +122,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       await storage.deleteSponsor(id);
       res.json({ success: true });
     } catch (error: any) {
@@ -176,7 +176,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       const validated = insertAboutContentSchema.partial().parse(req.body);
       await storage.updateAboutContent(id, validated);
       res.json({ success: true });
@@ -244,7 +244,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       const validated = insertUpcomingEventSchema.partial().parse(req.body);
       await storage.updateUpcomingEvent(id, validated);
       res.json({ success: true });
@@ -258,7 +258,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       const { winners, ...eventData } = req.body;
       const validated = insertPastEventSchema.partial().parse(eventData);
       await storage.updatePastEvent(id, validated, winners);
@@ -273,7 +273,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       const validated = insertCalendarEventSchema.partial().parse(req.body);
       await storage.updateCalendarEvent(id, validated);
       res.json({ success: true });
@@ -287,7 +287,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       await storage.deleteUpcomingEvent(id);
       res.json({ success: true });
     } catch (error: any) {
@@ -300,7 +300,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       await storage.deletePastEvent(id);
       res.json({ success: true });
     } catch (error: any) {
@@ -313,7 +313,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       await storage.deleteCalendarEvent(id);
       res.json({ success: true });
     } catch (error: any) {

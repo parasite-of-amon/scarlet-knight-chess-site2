@@ -23,40 +23,40 @@ import type {
 export interface IStorage {
   verifyAdmin(username: string, password: string): Promise<AdminUser | null>;
   createAdmin(admin: InsertAdminUser): Promise<AdminUser>;
-  
+
   getUnifiedEvents(): Promise<UnifiedEvent[]>;
   addUnifiedEvent(event: InsertUnifiedEvent): Promise<UnifiedEvent>;
-  updateUnifiedEvent(id: number, event: Partial<InsertUnifiedEvent>): Promise<void>;
-  deleteUnifiedEvent(id: number): Promise<void>;
-  
+  updateUnifiedEvent(id: string | number, event: Partial<InsertUnifiedEvent>): Promise<void>;
+  deleteUnifiedEvent(id: string | number): Promise<void>;
+
   getSponsors(): Promise<Sponsor[]>;
   addSponsor(sponsor: InsertSponsor): Promise<Sponsor>;
-  updateSponsor(id: number, sponsor: Partial<InsertSponsor>): Promise<void>;
-  deleteSponsor(id: number): Promise<void>;
-  
+  updateSponsor(id: string | number, sponsor: Partial<InsertSponsor>): Promise<void>;
+  deleteSponsor(id: string | number): Promise<void>;
+
   getSponsorFlyer(): Promise<SponsorFlyer | null>;
   setSponsorFlyer(flyer: InsertSponsorFlyer): Promise<SponsorFlyer>;
-  
+
   getAboutContent(section: string): Promise<AboutContent | null>;
   getAllAboutContent(): Promise<AboutContent[]>;
   setAboutContent(content: InsertAboutContent): Promise<AboutContent>;
-  updateAboutContent(id: number, content: Partial<InsertAboutContent>): Promise<void>;
-  
+  updateAboutContent(id: string | number, content: Partial<InsertAboutContent>): Promise<void>;
+
   getUpcomingEvents(): Promise<UpcomingEvent[]>;
   getPastEvents(): Promise<PastEventWithWinners[]>;
   getCalendarEvents(): Promise<CalendarEvent[]>;
-  
+
   addUpcomingEvent(event: InsertUpcomingEvent): Promise<UpcomingEvent>;
   addPastEvent(event: InsertPastEvent, winners?: InsertPastEventWinner[]): Promise<PastEventWithWinners>;
   addCalendarEvent(event: InsertCalendarEvent): Promise<CalendarEvent>;
-  
-  updateUpcomingEvent(id: number, event: Partial<InsertUpcomingEvent>): Promise<void>;
-  updatePastEvent(id: number, event: Partial<InsertPastEvent>, winners?: InsertPastEventWinner[]): Promise<void>;
-  updateCalendarEvent(id: number, event: Partial<InsertCalendarEvent>): Promise<void>;
-  
-  deleteUpcomingEvent(id: number): Promise<void>;
-  deletePastEvent(id: number): Promise<void>;
-  deleteCalendarEvent(id: number): Promise<void>;
+
+  updateUpcomingEvent(id: string | number, event: Partial<InsertUpcomingEvent>): Promise<void>;
+  updatePastEvent(id: string | number, event: Partial<InsertPastEvent>, winners?: InsertPastEventWinner[]): Promise<void>;
+  updateCalendarEvent(id: string | number, event: Partial<InsertCalendarEvent>): Promise<void>;
+
+  deleteUpcomingEvent(id: string | number): Promise<void>;
+  deletePastEvent(id: string | number): Promise<void>;
+  deleteCalendarEvent(id: string | number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
