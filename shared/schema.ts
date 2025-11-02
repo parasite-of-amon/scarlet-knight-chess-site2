@@ -28,21 +28,22 @@ export const unifiedEvents = pgTable("unified_events", {
 export const sponsors = pgTable("sponsors", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  logo: text("logo_path"),
+  logoPath: text("logo_url"),
   website: text("website_url"),
   tier: text("tier").default("bronze"),
-  order: integer("order").default(0),
+  order: integer("display_order").default(0),
 });
 
 export const sponsorFlyer = pgTable("sponsor_flyer", {
   id: serial("id").primaryKey(),
-  pdfPath: text("pdf_path").notNull(),
-  uploadedAt: text("uploaded_at").notNull(),
+  pdfUrl: text("pdf_url"),
+  uploadedAt: text("uploaded_at"),
 });
 
 export const aboutContent = pgTable("about_content", {
   id: serial("id").primaryKey(),
   section: text("section").notNull().unique(),
+  heading: text("heading"),
   content: text("content").notNull(),
   imagePath: text("image_path"),
 });

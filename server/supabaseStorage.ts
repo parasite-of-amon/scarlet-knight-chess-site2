@@ -88,7 +88,7 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
 
     return (data || []).map(event => ({
-      id: parseInt(event.id),
+      id: event.id,
       title: event.title,
       date: event.event_date,
       time: event.event_time || null,
@@ -152,7 +152,7 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
 
     return {
-      id: parseInt(data.id),
+      id: data.id,
       title: data.title,
       date: data.event_date,
       time: data.event_time || null,
@@ -185,7 +185,7 @@ export class SupabaseStorage implements IStorage {
     const { error } = await supabase
       .from('events')
       .update(updateData)
-      .eq('id', id);
+      .eq('id', String(id));
 
     if (error) throw error;
   }
@@ -194,7 +194,7 @@ export class SupabaseStorage implements IStorage {
     const { error } = await supabase
       .from('events')
       .delete()
-      .eq('id', id);
+      .eq('id', String(id));
 
     if (error) throw error;
   }
@@ -208,10 +208,10 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
 
     return (data || []).map(sponsor => ({
-      id: parseInt(sponsor.id),
+      id: sponsor.id,
       name: sponsor.name,
-      logo: sponsor.logo_url,
-      website: sponsor.website_url,
+      logoPath: sponsor.logo_url || '',
+      website: sponsor.website_url || '',
       tier: sponsor.tier,
       order: sponsor.display_order
     }));
@@ -222,7 +222,7 @@ export class SupabaseStorage implements IStorage {
       .from('sponsors')
       .insert({
         name: sponsor.name,
-        logo_url: sponsor.logo || '',
+        logo_url: sponsor.logoPath || '',
         website_url: sponsor.website || '',
         tier: sponsor.tier || 'bronze',
         display_order: sponsor.order || 0
@@ -233,10 +233,10 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
 
     return {
-      id: parseInt(data.id),
+      id: data.id,
       name: data.name,
-      logo: data.logo_url,
-      website: data.website_url,
+      logoPath: data.logo_url || '',
+      website: data.website_url || '',
       tier: data.tier,
       order: data.display_order
     };
@@ -246,7 +246,7 @@ export class SupabaseStorage implements IStorage {
     const updateData: any = {};
 
     if (updates.name !== undefined) updateData.name = updates.name;
-    if (updates.logo !== undefined) updateData.logo_url = updates.logo;
+    if (updates.logoPath !== undefined) updateData.logo_url = updates.logoPath;
     if (updates.website !== undefined) updateData.website_url = updates.website;
     if (updates.tier !== undefined) updateData.tier = updates.tier;
     if (updates.order !== undefined) updateData.display_order = updates.order;
@@ -254,7 +254,7 @@ export class SupabaseStorage implements IStorage {
     const { error } = await supabase
       .from('sponsors')
       .update(updateData)
-      .eq('id', id);
+      .eq('id', String(id));
 
     if (error) throw error;
   }
@@ -263,7 +263,7 @@ export class SupabaseStorage implements IStorage {
     const { error } = await supabase
       .from('sponsors')
       .delete()
-      .eq('id', id);
+      .eq('id', String(id));
 
     if (error) throw error;
   }
@@ -278,8 +278,9 @@ export class SupabaseStorage implements IStorage {
     if (error || !data) return null;
 
     return {
-      id: parseInt(data.id),
-      pdfUrl: data.content.pdfUrl || ''
+      id: data.id,
+      pdfUrl: data.content?.pdfUrl || '',
+      uploadedAt: data.updated_at
     };
   }
 
@@ -288,7 +289,8 @@ export class SupabaseStorage implements IStorage {
       .from('page_content')
       .upsert({
         page_name: 'sponsor_flyer',
-        content: { pdfUrl: flyer.pdfUrl }
+        content: { pdfUrl: flyer.pdfUrl },
+        updated_at: new Date().toISOString()
       }, { onConflict: 'page_name' })
       .select()
       .single();
@@ -296,8 +298,9 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
 
     return {
-      id: parseInt(data.id),
-      pdfUrl: data.content.pdfUrl || ''
+      id: data.id,
+      pdfUrl: data.content?.pdfUrl || '',
+      uploadedAt: data.updated_at
     };
   }
 
@@ -311,10 +314,11 @@ export class SupabaseStorage implements IStorage {
     if (error || !data) return null;
 
     return {
-      id: parseInt(data.id),
+      id: data.id,
       section,
-      heading: data.content.heading || '',
-      content: data.content.content || ''
+      heading: data.content?.heading || '',
+      content: data.content?.content || '',
+      imagePath: data.content?.imagePath || null
     };
   }
 
@@ -327,10 +331,11 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
 
     return (data || []).map(item => ({
-      id: parseInt(item.id),
+      id: item.id,
       section: item.page_name.replace('about_', ''),
-      heading: item.content.heading || '',
-      content: item.content.content || ''
+      heading: item.content?.heading || '',
+      content: item.content?.content || '',
+      imagePath: item.content?.imagePath || null
     }));
   }
 
@@ -341,8 +346,10 @@ export class SupabaseStorage implements IStorage {
         page_name: `about_${content.section}`,
         content: {
           heading: content.heading,
-          content: content.content
-        }
+          content: content.content,
+          imagePath: content.imagePath
+        },
+        updated_at: new Date().toISOString()
       }, { onConflict: 'page_name' })
       .select()
       .single();
@@ -350,10 +357,11 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
 
     return {
-      id: parseInt(data.id),
+      id: data.id,
       section: content.section,
-      heading: data.content.heading || '',
-      content: data.content.content || ''
+      heading: data.content?.heading || '',
+      content: data.content?.content || '',
+      imagePath: data.content?.imagePath || null
     };
   }
 
@@ -361,7 +369,7 @@ export class SupabaseStorage implements IStorage {
     const { data: existing } = await supabase
       .from('page_content')
       .select('*')
-      .eq('id', id)
+      .eq('id', String(id))
       .single();
 
     if (!existing) throw new Error('Content not found');
@@ -369,13 +377,14 @@ export class SupabaseStorage implements IStorage {
     const updatedContent = {
       ...existing.content,
       ...(updates.heading !== undefined && { heading: updates.heading }),
-      ...(updates.content !== undefined && { content: updates.content })
+      ...(updates.content !== undefined && { content: updates.content }),
+      ...(updates.imagePath !== undefined && { imagePath: updates.imagePath })
     };
 
     const { error } = await supabase
       .from('page_content')
       .update({ content: updatedContent, updated_at: new Date().toISOString() })
-      .eq('id', id);
+      .eq('id', String(id));
 
     if (error) throw error;
   }
@@ -390,7 +399,7 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
 
     return (data || []).map(event => ({
-      id: parseInt(event.id),
+      id: event.id,
       title: event.title,
       date: event.event_date,
       time: event.event_time || null,
@@ -413,7 +422,7 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
 
     return (data || []).map(event => ({
-      id: parseInt(event.id),
+      id: event.id,
       title: event.title,
       date: event.event_date,
       participants: null,
@@ -434,7 +443,7 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
 
     return (data || []).map(event => ({
-      id: parseInt(event.id),
+      id: event.id,
       title: event.title,
       date: event.event_date,
       time: event.event_time || null,
