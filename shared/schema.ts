@@ -112,7 +112,9 @@ export type InsertPastEvent = z.infer<typeof insertPastEventSchema>;
 export type InsertPastEventWinner = z.infer<typeof insertPastEventWinnerSchema>;
 export type InsertCalendarEvent = z.infer<typeof insertCalendarEventSchema>;
 
-export type AdminUser = typeof adminUsers.$inferSelect;
+export type AdminUser = typeof adminUsers.$inferSelect & {
+  id: string | number;
+};
 export type UnifiedEvent = typeof unifiedEvents.$inferSelect;
 export type Sponsor = typeof sponsors.$inferSelect;
 export type SponsorFlyer = typeof sponsorFlyer.$inferSelect;

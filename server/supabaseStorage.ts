@@ -41,16 +41,18 @@ export class SupabaseStorage implements IStorage {
       .maybeSingle();
 
     if (error || !data) {
+      console.error('Admin verification error:', error);
       return null;
     }
 
     const isValid = await bcrypt.compare(password, data.password_hash);
     if (!isValid) {
+      console.error('Invalid password for username:', username);
       return null;
     }
 
     return {
-      id: parseInt(data.id),
+      id: data.id,
       username: data.username,
       password: data.password_hash
     };
@@ -71,7 +73,7 @@ export class SupabaseStorage implements IStorage {
     if (error) throw error;
 
     return {
-      id: parseInt(data.id),
+      id: data.id,
       username: data.username,
       password: data.password_hash
     };
