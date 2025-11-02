@@ -22,6 +22,7 @@ export const unifiedEvents = pgTable("unified_events", {
   rounds: text("rounds"),
   rating: text("rating"),
   winners: text("winners"),
+  customLinks: text("custom_links"),
 });
 
 export const sponsors = pgTable("sponsors", {
@@ -127,4 +128,9 @@ export type WinnerInput = {
   place: string;
   name: string;
   score?: string;
+};
+
+export type CustomLink = {
+  title: string;
+  url: string;
 };

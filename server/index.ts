@@ -2,7 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import { registerRoutes } from "./routes";
 import { setupVite } from "./vite";
-import { storage } from "./storage";
+import { storage } from "./supabaseStorage";
 import crypto from "crypto";
 
 const app = express();
