@@ -28,7 +28,9 @@ export const unifiedEvents = pgTable("unified_events", {
 export const sponsors = pgTable("sponsors", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  logoPath: text("logo_path"),
+  logo: text("logo_path"),
+  website: text("website_url"),
+  tier: text("tier").default("bronze"),
   order: integer("order").default(0),
 });
 
