@@ -3,6 +3,7 @@ import session from "express-session";
 import { registerRoutes } from "./routes";
 import { setupVite } from "./vite";
 import { storage } from "./storage";
+import crypto from "crypto";
 
 const app = express();
 app.use(express.json());
@@ -21,7 +22,7 @@ if (!SESSION_SECRET) {
   }
 }
 
-const sessionSecret = SESSION_SECRET || require('crypto').randomBytes(32).toString('hex');
+const sessionSecret = SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 
 app.use(session({
   secret: sessionSecret,
