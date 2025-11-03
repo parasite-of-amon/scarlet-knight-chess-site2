@@ -14,22 +14,38 @@ export function registerRoutes(app: Express) {
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { username, password } = req.body;
+      console.log('[Auth] Login attempt for username:', username);
+
+      if (!username || !password) {
+        console.error('[Auth] Missing credentials');
+        return res.status(400).json({ error: "Username and password are required" });
+      }
+
       const admin = await storage.verifyAdmin(username, password);
       if (admin) {
         req.session.adminId = admin.id;
         req.session.save((err) => {
           if (err) {
             console.error('[Auth] Session save error:', err);
+            console.error('[Auth] Session details:', {
+              sessionID: req.sessionID,
+              hasSession: !!req.session,
+              cookieSettings: req.session.cookie
+            });
             return res.status(500).json({ error: "Failed to save session" });
           }
-          console.log('[Auth] Session saved successfully. SessionID:', req.sessionID, 'AdminID:', admin.id);
+          console.log('[Auth] Login successful!');
+          console.log('[Auth] Session saved. SessionID:', req.sessionID, 'AdminID:', admin.id);
+          console.log('[Auth] Cookie settings:', req.session.cookie);
           res.json({ success: true, username: admin.username });
         });
       } else {
+        console.error('[Auth] Invalid credentials for username:', username);
         res.status(401).json({ error: "Invalid credentials" });
       }
     } catch (error: any) {
       console.error('[Auth] Login error:', error);
+      console.error('[Auth] Error stack:', error.stack);
       res.status(500).json({ error: error.message });
     }
   });
@@ -48,6 +64,12 @@ export function registerRoutes(app: Express) {
   app.get("/api/auth/check", async (req, res) => {
     const isAdmin = !!req.session.adminId;
     console.log('[Auth] Check request - SessionID:', req.sessionID, 'AdminID:', req.session.adminId, 'IsAdmin:', isAdmin);
+    console.log('[Auth] Session cookies:', req.headers.cookie);
+    console.log('[Auth] Session data:', {
+      hasSession: !!req.session,
+      sessionID: req.sessionID,
+      adminId: req.session.adminId || 'none'
+    });
     if (isAdmin) {
       res.json({ isAdmin: true });
     } else {

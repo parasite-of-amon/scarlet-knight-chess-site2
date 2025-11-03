@@ -29,12 +29,14 @@ app.use(session({
   secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
-  name: 'sessionId',
+  name: 'rutgers.chess.session',
+  proxy: isProduction,
   cookie: {
     secure: isProduction,
     httpOnly: true,
-    sameSite: 'lax',
-    maxAge: 1000 * 60 * 60 * 24 * 7
+    sameSite: isProduction ? 'none' : 'lax',
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    path: '/'
   }
 }));
 
@@ -103,10 +105,15 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const PORT = 5000;
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Environment: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
     console.log(`Session configuration:`, {
+      secret: SESSION_SECRET ? 'SET' : 'AUTO-GENERATED',
       secure: isProduction,
-      sameSite: 'lax',
-      maxAge: '7 days'
+      sameSite: isProduction ? 'none' : 'lax',
+      maxAge: '7 days',
+      proxy: isProduction
     });
+    console.log(`Supabase URL: ${process.env.SUPABASE_URL ? 'SET' : 'MISSING'}`);
+    console.log(`Supabase Key: ${process.env.SUPABASE_ANON_KEY ? 'SET' : 'MISSING'}`);
   });
 })();

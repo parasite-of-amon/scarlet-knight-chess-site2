@@ -34,23 +34,33 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 export class SupabaseStorage implements IStorage {
 
   async verifyAdmin(username: string, password: string): Promise<AdminUser | null> {
+    console.log('[Storage] Verifying admin:', username);
+
     const { data, error } = await supabase
       .from('admins')
       .select('*')
       .eq('username', username)
       .maybeSingle();
 
-    if (error || !data) {
-      console.error('Admin verification error:', error);
+    if (error) {
+      console.error('[Storage] Database error during admin verification:', error);
       return null;
     }
 
+    if (!data) {
+      console.error('[Storage] Admin user not found:', username);
+      return null;
+    }
+
+    console.log('[Storage] Admin user found, verifying password...');
     const isValid = await bcrypt.compare(password, data.password_hash);
+
     if (!isValid) {
-      console.error('Invalid password for username:', username);
+      console.error('[Storage] Invalid password for username:', username);
       return null;
     }
 
+    console.log('[Storage] Password verified successfully for:', username);
     return {
       id: data.id,
       username: data.username,
