@@ -1,16 +1,46 @@
 import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import { registerRoutes } from "./routes";
-import { setupVite } from "./vite";
+import { setupVite, serveStatic } from "./vite";
 import { storage } from "./supabaseStorage";
 import crypto from "crypto";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const app = express();
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
 const isProduction = process.env.NODE_ENV === 'production';
+const isBoltProduction = process.env.REPL_ID || process.env.REPL_SLUG;
+
+const corsOptions = {
+  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
+    const allowedOrigins = [
+      /^https?:\/\/localhost(:\d+)?$/,
+      /^https?:\/\/127\.0\.0\.1(:\d+)?$/,
+      /\.bolt\.new$/,
+      /\.stackblitz\.io$/,
+      /\.webcontainer\.io$/
+    ];
+
+    if (!origin || allowedOrigins.some(pattern => pattern.test(origin))) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With'],
+  exposedHeaders: ['Set-Cookie']
+};
+
+app.use(cors(corsOptions));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 const SESSION_SECRET = process.env.SESSION_SECRET;
 
 if (!SESSION_SECRET) {
@@ -25,16 +55,18 @@ if (!SESSION_SECRET) {
 
 const sessionSecret = SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 
+const useSecureCookies = isProduction && !isBoltProduction;
+
 app.use(session({
   secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
   name: 'rutgers.chess.session',
-  proxy: isProduction,
+  proxy: true,
   cookie: {
-    secure: isProduction,
+    secure: useSecureCookies,
     httpOnly: true,
-    sameSite: isProduction ? 'none' : 'lax',
+    sameSite: useSecureCookies ? 'none' : 'lax',
     maxAge: 1000 * 60 * 60 * 24 * 7,
     path: '/'
   }
@@ -100,19 +132,26 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   await storage.seedData();
 
   registerRoutes(app);
-  const server = await setupVite(app);
+
+  if (isProduction) {
+    serveStatic(app);
+  } else {
+    await setupVite(app);
+  }
 
   const PORT = 5000;
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Environment: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
+    console.log(`Bolt Environment: ${isBoltProduction ? 'YES' : 'NO'}`);
     console.log(`Session configuration:`, {
       secret: SESSION_SECRET ? 'SET' : 'AUTO-GENERATED',
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
+      secure: useSecureCookies,
+      sameSite: useSecureCookies ? 'none' : 'lax',
       maxAge: '7 days',
-      proxy: isProduction
+      proxy: true
     });
+    console.log(`CORS enabled: YES`);
     console.log(`Supabase URL: ${process.env.SUPABASE_URL ? 'SET' : 'MISSING'}`);
     console.log(`Supabase Key: ${process.env.SUPABASE_ANON_KEY ? 'SET' : 'MISSING'}`);
   });

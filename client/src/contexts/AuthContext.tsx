@@ -17,11 +17,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuth = async () => {
     try {
-      const response = await fetch('/api/auth/check');
+      const response = await fetch('/api/auth/check', {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        console.warn(`Auth check returned status ${response.status}`);
+        setIsAdmin(false);
+        return;
+      }
+
       const data = await response.json();
       setIsAdmin(data.isAdmin || false);
     } catch (error) {
       console.error('Auth check failed:', error);
+      console.error('This may indicate the backend server is not running or not accessible');
       setIsAdmin(false);
     } finally {
       setIsLoading(false);

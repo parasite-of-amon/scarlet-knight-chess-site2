@@ -26,25 +26,34 @@ export function AdminLogin() {
     e.preventDefault();
     setLoading(true);
 
-    const success = await login(username, password);
-    
-    if (success) {
+    try {
+      const success = await login(username, password);
+
+      if (success) {
+        toast({
+          title: 'Login successful',
+          description: 'Welcome back, admin!',
+        });
+        setOpen(false);
+        setUsername('');
+        setPassword('');
+      } else {
+        toast({
+          title: 'Login failed',
+          description: 'Invalid username or password. Please check your credentials and try again.',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
       toast({
-        title: 'Login successful',
-        description: 'Welcome back, admin!',
-      });
-      setOpen(false);
-      setUsername('');
-      setPassword('');
-    } else {
-      toast({
-        title: 'Login failed',
-        description: 'Invalid username or password',
+        title: 'Connection error',
+        description: 'Unable to connect to the server. Please check your internet connection and try again.',
         variant: 'destructive',
       });
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   const handleLogout = async () => {
