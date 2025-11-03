@@ -1,0 +1,53 @@
+# Netlify Configuration for Rutgers Chess Club Website
+# This configuration deploys only the frontend static assets to Netlify
+# The backend API server should be deployed separately (Railway, Render, Fly.io, etc.)
+
+[build]
+  # Build command - builds the Vite frontend only
+  command = "npm run build"
+
+  # Directory containing the built static files
+  publish = "dist/public"
+
+  # Set environment for build process
+  [build.environment]
+    NODE_ENV = "production"
+    NODE_VERSION = "18"
+
+# Redirect all API requests to the external backend server
+# Replace VITE_API_URL with your actual backend URL when deploying
+[[redirects]]
+  from = "/api/*"
+  to = "/:splat"
+  status = 200
+  force = false
+
+  # This will be set via environment variable VITE_API_URL
+  # Example: https://your-backend.railway.app/api/:splat
+
+# SPA fallback - redirect all routes to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers for security and CORS
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Cache static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Don't cache HTML files
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"

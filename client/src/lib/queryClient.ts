@@ -1,7 +1,17 @@
 import { QueryClient } from "@tanstack/react-query";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+
+function getFullUrl(url: string): string {
+  if (!API_BASE_URL || url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  return `${API_BASE_URL}${url}`;
+}
+
 async function handleFetch(url: string, options?: RequestInit) {
-  const response = await fetch(url, {
+  const fullUrl = getFullUrl(url);
+  const response = await fetch(fullUrl, {
     ...options,
     headers: {
       "Content-Type": "application/json",

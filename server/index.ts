@@ -23,8 +23,16 @@ const corsOptions = {
       /^https?:\/\/127\.0\.0\.1(:\d+)?$/,
       /\.bolt\.new$/,
       /\.stackblitz\.io$/,
-      /\.webcontainer\.io$/
+      /\.webcontainer\.io$/,
+      /\.netlify\.app$/,
+      /\.netlify\.com$/
     ];
+
+    const FRONTEND_URL = process.env.FRONTEND_URL;
+    if (FRONTEND_URL && origin === FRONTEND_URL) {
+      callback(null, true);
+      return;
+    }
 
     if (!origin || allowedOrigins.some(pattern => pattern.test(origin))) {
       callback(null, true);
