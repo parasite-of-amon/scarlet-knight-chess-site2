@@ -5,6 +5,7 @@ import { z } from "zod";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -148,7 +149,9 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
       onOpenChange(false);
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to create event. Please try again.");
+      console.error("Failed to create event:", error);
+      const errorMessage = error.message || "Failed to create event. Please try again.";
+      toast.error(errorMessage);
     },
   });
 
@@ -169,7 +172,9 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
       onOpenChange(false);
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to update event. Please try again.");
+      console.error("Failed to update event:", error);
+      const errorMessage = error.message || "Failed to update event. Please try again.";
+      toast.error(errorMessage);
     },
   });
 
@@ -260,7 +265,7 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
   const handleSubmit = async (data: z.infer<typeof insertUnifiedEventFormSchema>) => {
     try {
       const imagePaths = await processImages();
-      
+
       const winnersData = (data.winners || []).filter(w => w.place && w.name);
       const winnersJson = winnersData.length > 0 ? JSON.stringify(winnersData) : undefined;
 
@@ -292,6 +297,8 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
       }
     } catch (error) {
       console.error("Error submitting event:", error);
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+      toast.error(errorMessage);
     }
   };
 
@@ -304,6 +311,11 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
           <DialogTitle className="font-serif text-2xl">
             {isEditMode ? "Edit Event" : "Create Event"}
           </DialogTitle>
+          <DialogDescription>
+            {isEditMode
+              ? "Update the event details below. Fields marked with an asterisk (*) are required."
+              : "Fill in the event details below. Fields marked with an asterisk (*) are required."}
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
