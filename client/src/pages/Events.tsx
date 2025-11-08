@@ -1,15 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, MapPin, Trophy, Users, Plus, Trash2, Edit } from "lucide-react";
+import { Calendar, MapPin, Trophy, Users, Plus, Trash2, Edit, ExternalLink } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { 
-  type UpcomingEvent, 
-  type PastEventWithWinners, 
-  type CalendarEvent 
+import {
+  type UpcomingEvent,
+  type PastEventWithWinners,
+  type CalendarEvent
 } from "@shared/schema";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { toast } from "sonner";
@@ -173,6 +173,54 @@ const Events = () => {
                           )}
                         </div>
                         {event.description && <p className="text-muted-foreground mb-6">{event.description}</p>}
+
+                        {(event.registrationLink || event.infoLink || event.externalLink) && (
+                          <div className="flex flex-wrap gap-2 mb-4 pb-4 border-b">
+                            {event.registrationLink && (
+                              <Button
+                                asChild
+                                variant="default"
+                                size="sm"
+                                className="gap-2"
+                                data-testid={`button-registration-link-${event.id}`}
+                              >
+                                <a href={event.registrationLink} target="_blank" rel="noopener noreferrer">
+                                  {event.registrationLinkLabel || "Register"}
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              </Button>
+                            )}
+                            {event.infoLink && (
+                              <Button
+                                asChild
+                                variant="outline"
+                                size="sm"
+                                className="gap-2"
+                                data-testid={`button-info-link-${event.id}`}
+                              >
+                                <a href={event.infoLink} target="_blank" rel="noopener noreferrer">
+                                  {event.infoLinkLabel || "More Info"}
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              </Button>
+                            )}
+                            {event.externalLink && (
+                              <Button
+                                asChild
+                                variant="outline"
+                                size="sm"
+                                className="gap-2"
+                                data-testid={`button-external-link-${event.id}`}
+                              >
+                                <a href={event.externalLink} target="_blank" rel="noopener noreferrer">
+                                  {event.externalLinkLabel || "View Resource"}
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              </Button>
+                            )}
+                          </div>
+                        )}
+
                         <div className="flex gap-3">
                           <Button
                             size="sm"
@@ -268,6 +316,54 @@ const Events = () => {
                         {event.description && (
                           <p className="text-muted-foreground mb-6">{event.description}</p>
                         )}
+
+                        {(event.registrationLink || event.infoLink || event.externalLink) && (
+                          <div className="flex flex-wrap gap-2 mb-4 pb-4 border-b">
+                            {event.registrationLink && (
+                              <Button
+                                asChild
+                                variant="default"
+                                size="sm"
+                                className="gap-2"
+                                data-testid={`button-registration-link-${event.id}`}
+                              >
+                                <a href={event.registrationLink} target="_blank" rel="noopener noreferrer">
+                                  {event.registrationLinkLabel || "Register"}
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              </Button>
+                            )}
+                            {event.infoLink && (
+                              <Button
+                                asChild
+                                variant="outline"
+                                size="sm"
+                                className="gap-2"
+                                data-testid={`button-info-link-${event.id}`}
+                              >
+                                <a href={event.infoLink} target="_blank" rel="noopener noreferrer">
+                                  {event.infoLinkLabel || "More Info"}
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              </Button>
+                            )}
+                            {event.externalLink && (
+                              <Button
+                                asChild
+                                variant="outline"
+                                size="sm"
+                                className="gap-2"
+                                data-testid={`button-external-link-${event.id}`}
+                              >
+                                <a href={event.externalLink} target="_blank" rel="noopener noreferrer">
+                                  {event.externalLinkLabel || "View Resource"}
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              </Button>
+                            )}
+                          </div>
+                        )}
+
                         <div className="flex gap-3">
                           <Button
                             size="sm"
@@ -329,6 +425,54 @@ const Events = () => {
                             <p className="font-medium">{event.time}</p>
                             <p className="text-sm text-muted-foreground">{event.location}</p>
                             <p className="text-sm mt-3 mb-4 text-muted-foreground">{event.description}</p>
+
+                            {(event.registrationLink || event.infoLink || event.externalLink) && (
+                              <div className="flex flex-wrap gap-2 mb-4 pb-4 border-b">
+                                {event.registrationLink && (
+                                  <Button
+                                    asChild
+                                    variant="default"
+                                    size="sm"
+                                    className="gap-2"
+                                    data-testid={`button-registration-link-${event.id}`}
+                                  >
+                                    <a href={event.registrationLink} target="_blank" rel="noopener noreferrer">
+                                      {event.registrationLinkLabel || "Register"}
+                                      <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                  </Button>
+                                )}
+                                {event.infoLink && (
+                                  <Button
+                                    asChild
+                                    variant="outline"
+                                    size="sm"
+                                    className="gap-2"
+                                    data-testid={`button-info-link-${event.id}`}
+                                  >
+                                    <a href={event.infoLink} target="_blank" rel="noopener noreferrer">
+                                      {event.infoLinkLabel || "More Info"}
+                                      <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                  </Button>
+                                )}
+                                {event.externalLink && (
+                                  <Button
+                                    asChild
+                                    variant="outline"
+                                    size="sm"
+                                    className="gap-2"
+                                    data-testid={`button-external-link-${event.id}`}
+                                  >
+                                    <a href={event.externalLink} target="_blank" rel="noopener noreferrer">
+                                      {event.externalLinkLabel || "View Resource"}
+                                      <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                  </Button>
+                                )}
+                              </div>
+                            )}
+
                             <div className="flex gap-3">
                               <Button
                                 size="sm"

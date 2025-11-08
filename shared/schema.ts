@@ -22,6 +22,12 @@ export const unifiedEvents = pgTable("unified_events", {
   rounds: text("rounds"),
   rating: text("rating"),
   winners: text("winners"),
+  registrationLink: text("registration_link"),
+  registrationLinkLabel: text("registration_link_label"),
+  infoLink: text("info_link"),
+  infoLinkLabel: text("info_link_label"),
+  externalLink: text("external_link"),
+  externalLinkLabel: text("external_link_label"),
 });
 
 export const sponsors = pgTable("sponsors", {
@@ -54,6 +60,12 @@ export const upcomingEvents = pgTable("upcoming_events", {
   imagePaths: text("image_paths"),
   isRecurring: boolean("is_recurring").default(false),
   recurrencePattern: text("recurrence_pattern"),
+  registrationLink: text("registration_link"),
+  registrationLinkLabel: text("registration_link_label"),
+  infoLink: text("info_link"),
+  infoLinkLabel: text("info_link_label"),
+  externalLink: text("external_link"),
+  externalLinkLabel: text("external_link_label"),
 });
 
 export const pastEvents = pgTable("past_events", {
@@ -65,6 +77,12 @@ export const pastEvents = pgTable("past_events", {
   rating: text("rating"),
   description: text("description"),
   imagePaths: text("image_paths"),
+  registrationLink: text("registration_link"),
+  registrationLinkLabel: text("registration_link_label"),
+  infoLink: text("info_link"),
+  infoLinkLabel: text("info_link_label"),
+  externalLink: text("external_link"),
+  externalLinkLabel: text("external_link_label"),
 });
 
 export const pastEventWinners = pgTable("past_event_winners", {
@@ -87,6 +105,12 @@ export const calendarEvents = pgTable("calendar_events", {
   imagePaths: text("image_paths"),
   isRecurring: boolean("is_recurring").default(false),
   recurrencePattern: text("recurrence_pattern"),
+  registrationLink: text("registration_link"),
+  registrationLinkLabel: text("registration_link_label"),
+  infoLink: text("info_link"),
+  infoLinkLabel: text("info_link_label"),
+  externalLink: text("external_link"),
+  externalLinkLabel: text("external_link_label"),
 });
 
 export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({ id: true });

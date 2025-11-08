@@ -1,3 +1,5 @@
+import { parseEventDate, categorizeEventByDate } from "./dateUtils";
+
 import type { 
   UpcomingEvent, 
   PastEvent, 
@@ -81,6 +83,7 @@ export class MemStorage implements IStorage {
   
   constructor() {
     this.createAdmin({ username: "admin", password: "RutgersChessClub@123" });
+    this.seedData();
   }
   
   async verifyAdmin(username: string, password: string): Promise<AdminUser | null> {
@@ -101,40 +104,8 @@ export class MemStorage implements IStorage {
     return [...this.unifiedEvents];
   }
   
-  private parseEventDate(dateString: string): Date | null {
-    const formats = [
-      /^(\w+)\s+(\d+),\s+(\d{4})$/,
-      /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/,
-      /^(\d{4})-(\d{2})-(\d{2})$/,
-    ];
-    
-    try {
-      const date = new Date(dateString);
-      if (!isNaN(date.getTime())) {
-        return date;
-      }
-    } catch {
-      return null;
-    }
-    
-    return null;
-  }
-  
   private categorizeEvent(event: InsertUnifiedEvent): 'upcoming' | 'past' {
-    if (event.isRecurring) {
-      return 'upcoming';
-    }
-    
-    const eventDate = this.parseEventDate(event.date);
-    if (!eventDate) {
-      return 'upcoming';
-    }
-    
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    eventDate.setHours(0, 0, 0, 0);
-    
-    return eventDate < today ? 'past' : 'upcoming';
+    return categorizeEventByDate(event.date, event.isRecurring || false);
   }
 
   async addUnifiedEvent(event: InsertUnifiedEvent): Promise<UnifiedEvent> {
@@ -157,8 +128,14 @@ export class MemStorage implements IStorage {
         imagePaths: event.imagePaths ?? null,
         isRecurring: event.isRecurring ?? false,
         recurrencePattern: event.recurrencePattern ?? null,
+        registrationLink: event.registrationLink ?? null,
+        registrationLinkLabel: event.registrationLinkLabel ?? null,
+        infoLink: event.infoLink ?? null,
+        infoLinkLabel: event.infoLinkLabel ?? null,
+        externalLink: event.externalLink ?? null,
+        externalLinkLabel: event.externalLinkLabel ?? null,
       });
-      
+
       await this.addCalendarEvent({
         title: event.title,
         date: event.date,
@@ -170,6 +147,12 @@ export class MemStorage implements IStorage {
         imagePaths: event.imagePaths ?? null,
         isRecurring: event.isRecurring ?? false,
         recurrencePattern: event.recurrencePattern ?? null,
+        registrationLink: event.registrationLink ?? null,
+        registrationLinkLabel: event.registrationLinkLabel ?? null,
+        infoLink: event.infoLink ?? null,
+        infoLinkLabel: event.infoLinkLabel ?? null,
+        externalLink: event.externalLink ?? null,
+        externalLinkLabel: event.externalLinkLabel ?? null,
       });
     } else {
       let winners: any[] = [];
@@ -189,8 +172,14 @@ export class MemStorage implements IStorage {
         rating: event.rating ?? null,
         description: event.description ?? null,
         imagePaths: event.imagePaths ?? null,
+        registrationLink: event.registrationLink ?? null,
+        registrationLinkLabel: event.registrationLinkLabel ?? null,
+        infoLink: event.infoLink ?? null,
+        infoLinkLabel: event.infoLinkLabel ?? null,
+        externalLink: event.externalLink ?? null,
+        externalLinkLabel: event.externalLinkLabel ?? null,
       }, winners);
-      
+
       await this.addCalendarEvent({
         title: event.title,
         date: event.date,
@@ -202,6 +191,12 @@ export class MemStorage implements IStorage {
         imagePaths: event.imagePaths ?? null,
         isRecurring: false,
         recurrencePattern: null,
+        registrationLink: event.registrationLink ?? null,
+        registrationLinkLabel: event.registrationLinkLabel ?? null,
+        infoLink: event.infoLink ?? null,
+        infoLinkLabel: event.infoLinkLabel ?? null,
+        externalLink: event.externalLink ?? null,
+        externalLinkLabel: event.externalLinkLabel ?? null,
       });
     }
     
@@ -230,8 +225,14 @@ export class MemStorage implements IStorage {
           imagePaths: updatedEvent.imagePaths ?? null,
           isRecurring: updatedEvent.isRecurring ?? false,
           recurrencePattern: updatedEvent.recurrencePattern ?? null,
+          registrationLink: updatedEvent.registrationLink ?? null,
+          registrationLinkLabel: updatedEvent.registrationLinkLabel ?? null,
+          infoLink: updatedEvent.infoLink ?? null,
+          infoLinkLabel: updatedEvent.infoLinkLabel ?? null,
+          externalLink: updatedEvent.externalLink ?? null,
+          externalLinkLabel: updatedEvent.externalLinkLabel ?? null,
         });
-        
+
         await this.addCalendarEvent({
           title: updatedEvent.title,
           date: updatedEvent.date,
@@ -243,6 +244,12 @@ export class MemStorage implements IStorage {
           imagePaths: updatedEvent.imagePaths ?? null,
           isRecurring: updatedEvent.isRecurring ?? false,
           recurrencePattern: updatedEvent.recurrencePattern ?? null,
+          registrationLink: updatedEvent.registrationLink ?? null,
+          registrationLinkLabel: updatedEvent.registrationLinkLabel ?? null,
+          infoLink: updatedEvent.infoLink ?? null,
+          infoLinkLabel: updatedEvent.infoLinkLabel ?? null,
+          externalLink: updatedEvent.externalLink ?? null,
+          externalLinkLabel: updatedEvent.externalLinkLabel ?? null,
         });
       } else {
         let winners: any[] = [];
@@ -262,8 +269,14 @@ export class MemStorage implements IStorage {
           rating: updatedEvent.rating ?? null,
           description: updatedEvent.description ?? null,
           imagePaths: updatedEvent.imagePaths ?? null,
+          registrationLink: updatedEvent.registrationLink ?? null,
+          registrationLinkLabel: updatedEvent.registrationLinkLabel ?? null,
+          infoLink: updatedEvent.infoLink ?? null,
+          infoLinkLabel: updatedEvent.infoLinkLabel ?? null,
+          externalLink: updatedEvent.externalLink ?? null,
+          externalLinkLabel: updatedEvent.externalLinkLabel ?? null,
         }, winners);
-        
+
         await this.addCalendarEvent({
           title: updatedEvent.title,
           date: updatedEvent.date,
@@ -275,6 +288,12 @@ export class MemStorage implements IStorage {
           imagePaths: updatedEvent.imagePaths ?? null,
           isRecurring: false,
           recurrencePattern: null,
+          registrationLink: updatedEvent.registrationLink ?? null,
+          registrationLinkLabel: updatedEvent.registrationLinkLabel ?? null,
+          infoLink: updatedEvent.infoLink ?? null,
+          infoLinkLabel: updatedEvent.infoLinkLabel ?? null,
+          externalLink: updatedEvent.externalLink ?? null,
+          externalLinkLabel: updatedEvent.externalLinkLabel ?? null,
         });
       }
     }
@@ -467,10 +486,16 @@ export class MemStorage implements IStorage {
       date: "Every Tuesday",
       time: "7:00 PM - 9:00 PM",
       location: "Busch Student Center - Food Court",
-      description: "Casual games, practice, and chess discussion",
+      description: "Join us for casual games, practice, and chess discussion. All skill levels welcome!",
       imagePaths: null,
       isRecurring: true,
-      recurrencePattern: "weekly_tuesday"
+      recurrencePattern: "weekly_tuesday",
+      registrationLink: null,
+      registrationLinkLabel: null,
+      infoLink: "https://rutgers.edu/chess/meetings",
+      infoLinkLabel: "Meeting Details",
+      externalLink: null,
+      externalLinkLabel: null,
     });
 
     await this.addUpcomingEvent({
@@ -478,10 +503,50 @@ export class MemStorage implements IStorage {
       date: "Every Friday",
       time: "7:00 PM - 9:00 PM",
       location: "Busch Student Center - The Cove or Food Court",
-      description: "Casual games, practice, and chess discussion",
+      description: "Join us for casual games, practice, and chess discussion. All skill levels welcome!",
       imagePaths: null,
       isRecurring: true,
-      recurrencePattern: "weekly_friday"
+      recurrencePattern: "weekly_friday",
+      registrationLink: null,
+      registrationLinkLabel: null,
+      infoLink: "https://rutgers.edu/chess/meetings",
+      infoLinkLabel: "Meeting Details",
+      externalLink: null,
+      externalLinkLabel: null,
+    });
+
+    await this.addUpcomingEvent({
+      title: "Spring 2025 Championship Tournament",
+      date: "March 15, 2025",
+      time: "10:00 AM - 6:00 PM",
+      location: "Rutgers Student Center - Multipurpose Room",
+      description: "Annual spring chess championship. USCF rated event with prizes for top finishers. Join us for an exciting day of competitive chess!",
+      imagePaths: null,
+      isRecurring: false,
+      recurrencePattern: null,
+      registrationLink: "https://forms.rutgers.edu/chess/spring-2025",
+      registrationLinkLabel: "Register Now",
+      infoLink: "https://rutgers.edu/chess/tournaments/spring-2025",
+      infoLinkLabel: "Tournament Info",
+      externalLink: "https://www.uschess.org/content/view/15791/",
+      externalLinkLabel: "USCF Rules",
+    });
+
+    await this.addUpcomingEvent({
+      title: "Beginner Chess Workshop",
+      date: "February 20, 2025",
+      time: "6:00 PM - 8:00 PM",
+      location: "Busch Student Center - Room 201",
+      description: "Learn the basics of chess in this hands-on workshop. Perfect for beginners or those wanting to refresh their skills. All materials provided!",
+      imagePaths: null,
+      isRecurring: false,
+      recurrencePattern: null,
+      registrationLink: "https://forms.rutgers.edu/chess/beginner-workshop",
+      registrationLinkLabel: "Sign Up",
+      infoLink: null,
+      infoLinkLabel: null,
+      externalLink: "https://www.chess.com/lessons",
+      externalLinkLabel: "Chess.com Lessons",
     });
 
     await this.addPastEvent({
@@ -490,8 +555,14 @@ export class MemStorage implements IStorage {
       participants: "18 participants",
       rounds: "5 rounds",
       rating: "USCF Rated",
-      description: null,
+      description: "Fast-paced blitz tournament with exciting games and competitive play.",
       imagePaths: null,
+      registrationLink: null,
+      registrationLinkLabel: null,
+      infoLink: "https://rutgers.edu/chess/results/spring-2023",
+      infoLinkLabel: "Full Results",
+      externalLink: null,
+      externalLinkLabel: null,
     }, [
       { pastEventId: 0, place: "1st", name: "Ansh Shah", score: "5-0" },
       { pastEventId: 0, place: "2nd", name: "Joaquin Carlson", score: "4-1" },
@@ -504,8 +575,14 @@ export class MemStorage implements IStorage {
       participants: "16 participants",
       rounds: "7 rounds",
       rating: "USCF Rated",
-      description: null,
+      description: "Intense competition with a perfect 7-0 score by our champion!",
       imagePaths: null,
+      registrationLink: null,
+      registrationLinkLabel: null,
+      infoLink: "https://rutgers.edu/chess/results/fall-2023",
+      infoLinkLabel: "View Results",
+      externalLink: null,
+      externalLinkLabel: null,
     }, [
       { pastEventId: 0, place: "1st", name: "Aravind Kumar", score: "7-0" },
       { pastEventId: 0, place: "2nd (tie)", name: "Lev Zilbermintz & Ansh Shah", score: "5-2" },
@@ -515,12 +592,18 @@ export class MemStorage implements IStorage {
 
     await this.addPastEvent({
       title: "US Amateur Team East 2023",
-      date: "February 2023",
+      date: "February 18, 2023",
       participants: "Team Event",
-      rounds: null,
-      rating: null,
-      description: "Rutgers Chess Club participated in this prestigious team tournament.",
+      rounds: "6 rounds",
+      rating: "USCF Rated",
+      description: "Rutgers Chess Club participated in this prestigious team tournament. Great experience competing against teams from across the region!",
       imagePaths: null,
+      registrationLink: null,
+      registrationLinkLabel: null,
+      infoLink: "https://www.njscf.org/usate/",
+      infoLinkLabel: "Tournament Site",
+      externalLink: null,
+      externalLinkLabel: null,
     });
 
     await this.addCalendarEvent({
@@ -533,7 +616,13 @@ export class MemStorage implements IStorage {
       colorCode: "green",
       imagePaths: null,
       isRecurring: true,
-      recurrencePattern: "weekly_tuesday"
+      recurrencePattern: "weekly_tuesday",
+      registrationLink: null,
+      registrationLinkLabel: null,
+      infoLink: "https://rutgers.edu/chess/meetings",
+      infoLinkLabel: "Meeting Details",
+      externalLink: null,
+      externalLinkLabel: null,
     });
 
     await this.addCalendarEvent({
@@ -546,7 +635,13 @@ export class MemStorage implements IStorage {
       colorCode: "green",
       imagePaths: null,
       isRecurring: true,
-      recurrencePattern: "weekly_friday"
+      recurrencePattern: "weekly_friday",
+      registrationLink: null,
+      registrationLinkLabel: null,
+      infoLink: "https://rutgers.edu/chess/meetings",
+      infoLinkLabel: "Meeting Details",
+      externalLink: null,
+      externalLinkLabel: null,
     });
   }
 }

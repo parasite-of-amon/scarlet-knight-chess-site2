@@ -9,6 +9,9 @@ const Navigation = () => {
   const navItems = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
+  ];
+
+  const navItemsAfterEvents = [
     { name: "Resources", path: "/resources" },
     { name: "Sponsors", path: "/sponsors" },
     { name: "Contact", path: "/contact" },
@@ -54,7 +57,7 @@ const Navigation = () => {
                 {item.name}
               </Link>
             ))}
-            
+
             {/* Events Dropdown */}
             <div className="relative group">
               <button
@@ -68,7 +71,7 @@ const Navigation = () => {
                 Events
                 <ChevronDown className="h-3 w-3" />
               </button>
-              
+
               {/* Dropdown Menu */}
               <div className="absolute left-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                 <div className="py-1">
@@ -85,7 +88,22 @@ const Navigation = () => {
                 </div>
               </div>
             </div>
-            
+
+            {navItemsAfterEvents.map((item) => (
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`text-sm transition-colors ${
+                  isActive(item.path)
+                    ? "text-primary font-medium"
+                    : "text-gray-700 hover:text-primary"
+                }`}
+                data-testid={`link-${item.name.toLowerCase().replace(' ', '-')}`}
+              >
+                {item.name}
+              </Link>
+            ))}
+
             <Link
               href={joinClubItem.path}
               className="bg-primary text-primary-foreground px-6 py-2.5 rounded-lg font-semibold border-2 border-[#FFD700] hover:bg-primary/90 hover:shadow-lg transition-all duration-300"
@@ -122,7 +140,7 @@ const Navigation = () => {
                 {item.name}
               </Link>
             ))}
-            
+
             {/* Events Submenu for Mobile */}
             <div className="space-y-2">
               <div className={`py-2 text-sm font-medium ${
@@ -148,7 +166,23 @@ const Navigation = () => {
                 ))}
               </div>
             </div>
-            
+
+            {navItemsAfterEvents.map((item) => (
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`block py-2 text-sm transition-colors ${
+                  isActive(item.path)
+                    ? "text-primary font-medium"
+                    : "text-gray-700 hover:text-primary"
+                }`}
+                onClick={() => setIsOpen(false)}
+                data-testid={`mobile-link-${item.name.toLowerCase().replace(' ', '-')}`}
+              >
+                {item.name}
+              </Link>
+            ))}
+
             <Link
               href={joinClubItem.path}
               className="block bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold border-2 border-[#FFD700] hover:bg-primary/90 transition-all duration-300 text-center mt-4"

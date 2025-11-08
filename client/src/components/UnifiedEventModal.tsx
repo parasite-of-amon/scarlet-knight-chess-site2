@@ -75,6 +75,12 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
       rounds: "",
       rating: "",
       winners: [],
+      registrationLink: "",
+      registrationLinkLabel: "",
+      infoLink: "",
+      infoLinkLabel: "",
+      externalLink: "",
+      externalLinkLabel: "",
     },
   });
 
@@ -121,6 +127,12 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
         rounds: event.rounds || "",
         rating: event.rating || "",
         winners: parsedWinners,
+        registrationLink: event.registrationLink || "",
+        registrationLinkLabel: event.registrationLinkLabel || "",
+        infoLink: event.infoLink || "",
+        infoLinkLabel: event.infoLinkLabel || "",
+        externalLink: event.externalLink || "",
+        externalLinkLabel: event.externalLinkLabel || "",
       });
     } else if (open && !event) {
       resetForm();
@@ -204,6 +216,12 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
       rounds: "",
       rating: "",
       winners: [],
+      registrationLink: "",
+      registrationLinkLabel: "",
+      infoLink: "",
+      infoLinkLabel: "",
+      externalLink: "",
+      externalLinkLabel: "",
     });
   };
 
@@ -267,6 +285,12 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
         rounds: data.rounds || undefined,
         rating: data.rating || undefined,
         winners: winnersJson,
+        registrationLink: data.registrationLink || undefined,
+        registrationLinkLabel: data.registrationLinkLabel || undefined,
+        infoLink: data.infoLink || undefined,
+        infoLinkLabel: data.infoLinkLabel || undefined,
+        externalLink: data.externalLink || undefined,
+        externalLinkLabel: data.externalLinkLabel || undefined,
       };
 
       if (isEditMode && event?.id) {
@@ -599,6 +623,133 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
                   ))}
                 </div>
               )}
+            </div>
+
+            <div className="space-y-4 border-t pt-4">
+              <FormLabel className="text-lg font-semibold">Custom Links (Optional)</FormLabel>
+              <p className="text-sm text-muted-foreground">Add clickable links to your event</p>
+
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="registrationLink"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Registration URL</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="https://example.com/register"
+                            {...field}
+                            value={field.value || ""}
+                            data-testid="input-registration-link"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="registrationLinkLabel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Label</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Register Here"
+                            {...field}
+                            value={field.value || ""}
+                            data-testid="input-registration-label"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="infoLink"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Information URL</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="https://example.com/info"
+                            {...field}
+                            value={field.value || ""}
+                            data-testid="input-info-link"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="infoLinkLabel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Label</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="More Info"
+                            {...field}
+                            value={field.value || ""}
+                            data-testid="input-info-label"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="externalLink"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>External Resource URL</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="https://example.com/resource"
+                            {...field}
+                            value={field.value || ""}
+                            data-testid="input-external-link"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="externalLinkLabel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Label</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="View Resource"
+                            {...field}
+                            value={field.value || ""}
+                            data-testid="input-external-label"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
             </div>
 
             <Button type="submit" className="w-full" disabled={isPending} data-testid="button-submit">
