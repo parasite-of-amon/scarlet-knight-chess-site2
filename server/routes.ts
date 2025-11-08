@@ -1,5 +1,5 @@
 import type { Express } from "express";
-import { storage } from "./supabaseStorage";
+import { storage } from "./storage";
 import { 
   insertUpcomingEventSchema, 
   insertPastEventSchema, 
@@ -14,63 +14,26 @@ export function registerRoutes(app: Express) {
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { username, password } = req.body;
-      console.log('[Auth] Login attempt for username:', username);
-
-      if (!username || !password) {
-        console.error('[Auth] Missing credentials');
-        return res.status(400).json({ error: "Username and password are required" });
-      }
-
       const admin = await storage.verifyAdmin(username, password);
       if (admin) {
         req.session.adminId = admin.id;
-        req.session.save((err) => {
-          if (err) {
-            console.error('[Auth] Session save error:', err);
-            console.error('[Auth] Session details:', {
-              sessionID: req.sessionID,
-              hasSession: !!req.session,
-              cookieSettings: req.session.cookie
-            });
-            return res.status(500).json({ error: "Failed to save session" });
-          }
-          console.log('[Auth] Login successful!');
-          console.log('[Auth] Session saved. SessionID:', req.sessionID, 'AdminID:', admin.id);
-          console.log('[Auth] Cookie settings:', req.session.cookie);
-          res.json({ success: true, username: admin.username });
-        });
+        res.json({ success: true, username: admin.username });
       } else {
-        console.error('[Auth] Invalid credentials for username:', username);
         res.status(401).json({ error: "Invalid credentials" });
       }
     } catch (error: any) {
-      console.error('[Auth] Login error:', error);
-      console.error('[Auth] Error stack:', error.stack);
       res.status(500).json({ error: error.message });
     }
   });
   
   app.post("/api/auth/logout", async (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        console.error('[Auth] Logout error:', err);
-        return res.status(500).json({ error: "Failed to destroy session" });
-      }
-      console.log('[Auth] Session destroyed successfully');
+    req.session.destroy(() => {
       res.json({ success: true });
     });
   });
   
   app.get("/api/auth/check", async (req, res) => {
-    const isAdmin = !!req.session.adminId;
-    console.log('[Auth] Check request - SessionID:', req.sessionID, 'AdminID:', req.session.adminId, 'IsAdmin:', isAdmin);
-    console.log('[Auth] Session cookies:', req.headers.cookie);
-    console.log('[Auth] Session data:', {
-      hasSession: !!req.session,
-      sessionID: req.sessionID,
-      adminId: req.session.adminId || 'none'
-    });
-    if (isAdmin) {
+    if (req.session.adminId) {
       res.json({ isAdmin: true });
     } else {
       res.json({ isAdmin: false });
@@ -100,7 +63,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       const validated = insertUnifiedEventSchema.partial().parse(req.body);
       await storage.updateUnifiedEvent(id, validated);
       res.json({ success: true });
@@ -114,7 +77,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       await storage.deleteUnifiedEvent(id);
       res.json({ success: true });
     } catch (error: any) {
@@ -145,7 +108,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       const validated = insertSponsorSchema.partial().parse(req.body);
       await storage.updateSponsor(id, validated);
       res.json({ success: true });
@@ -159,7 +122,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       await storage.deleteSponsor(id);
       res.json({ success: true });
     } catch (error: any) {
@@ -213,7 +176,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       const validated = insertAboutContentSchema.partial().parse(req.body);
       await storage.updateAboutContent(id, validated);
       res.json({ success: true });
@@ -281,7 +244,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       const validated = insertUpcomingEventSchema.partial().parse(req.body);
       await storage.updateUpcomingEvent(id, validated);
       res.json({ success: true });
@@ -295,7 +258,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       const { winners, ...eventData } = req.body;
       const validated = insertPastEventSchema.partial().parse(eventData);
       await storage.updatePastEvent(id, validated, winners);
@@ -310,7 +273,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       const validated = insertCalendarEventSchema.partial().parse(req.body);
       await storage.updateCalendarEvent(id, validated);
       res.json({ success: true });
@@ -324,7 +287,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       await storage.deleteUpcomingEvent(id);
       res.json({ success: true });
     } catch (error: any) {
@@ -337,7 +300,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       await storage.deletePastEvent(id);
       res.json({ success: true });
     } catch (error: any) {
@@ -350,7 +313,7 @@ export function registerRoutes(app: Express) {
       if (!req.session.adminId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       await storage.deleteCalendarEvent(id);
       res.json({ success: true });
     } catch (error: any) {

@@ -22,28 +22,24 @@ export const unifiedEvents = pgTable("unified_events", {
   rounds: text("rounds"),
   rating: text("rating"),
   winners: text("winners"),
-  customLinks: text("custom_links"),
 });
 
 export const sponsors = pgTable("sponsors", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  logoPath: text("logo_url"),
-  website: text("website_url"),
-  tier: text("tier").default("bronze"),
-  order: integer("display_order").default(0),
+  logoPath: text("logo_path"),
+  order: integer("order").default(0),
 });
 
 export const sponsorFlyer = pgTable("sponsor_flyer", {
   id: serial("id").primaryKey(),
-  pdfUrl: text("pdf_url"),
-  uploadedAt: text("uploaded_at"),
+  pdfPath: text("pdf_path").notNull(),
+  uploadedAt: text("uploaded_at").notNull(),
 });
 
 export const aboutContent = pgTable("about_content", {
   id: serial("id").primaryKey(),
   section: text("section").notNull().unique(),
-  heading: text("heading"),
   content: text("content").notNull(),
   imagePath: text("image_path"),
 });
@@ -113,31 +109,15 @@ export type InsertPastEvent = z.infer<typeof insertPastEventSchema>;
 export type InsertPastEventWinner = z.infer<typeof insertPastEventWinnerSchema>;
 export type InsertCalendarEvent = z.infer<typeof insertCalendarEventSchema>;
 
-export type AdminUser = typeof adminUsers.$inferSelect & {
-  id: string | number;
-};
-export type UnifiedEvent = typeof unifiedEvents.$inferSelect & {
-  id: string | number;
-};
-export type Sponsor = typeof sponsors.$inferSelect & {
-  id: string | number;
-};
-export type SponsorFlyer = typeof sponsorFlyer.$inferSelect & {
-  id: string | number;
-};
-export type AboutContent = typeof aboutContent.$inferSelect & {
-  id: string | number;
-};
-export type UpcomingEvent = typeof upcomingEvents.$inferSelect & {
-  id: string | number;
-};
-export type PastEvent = typeof pastEvents.$inferSelect & {
-  id: string | number;
-};
+export type AdminUser = typeof adminUsers.$inferSelect;
+export type UnifiedEvent = typeof unifiedEvents.$inferSelect;
+export type Sponsor = typeof sponsors.$inferSelect;
+export type SponsorFlyer = typeof sponsorFlyer.$inferSelect;
+export type AboutContent = typeof aboutContent.$inferSelect;
+export type UpcomingEvent = typeof upcomingEvents.$inferSelect;
+export type PastEvent = typeof pastEvents.$inferSelect;
 export type PastEventWinner = typeof pastEventWinners.$inferSelect;
-export type CalendarEvent = typeof calendarEvents.$inferSelect & {
-  id: string | number;
-};
+export type CalendarEvent = typeof calendarEvents.$inferSelect;
 
 export type PastEventWithWinners = PastEvent & {
   winners: PastEventWinner[];
@@ -147,9 +127,4 @@ export type WinnerInput = {
   place: string;
   name: string;
   score?: string;
-};
-
-export type CustomLink = {
-  title: string;
-  url: string;
 };

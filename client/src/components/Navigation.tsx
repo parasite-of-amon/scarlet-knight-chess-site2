@@ -40,29 +40,21 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link
-              href="/"
-              className={`text-sm transition-colors ${
-                isActive("/")
-                  ? "text-primary font-medium"
-                  : "text-gray-700 hover:text-primary"
-              }`}
-              data-testid="link-home"
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className={`text-sm transition-colors ${
-                isActive("/about")
-                  ? "text-primary font-medium"
-                  : "text-gray-700 hover:text-primary"
-              }`}
-              data-testid="link-about"
-            >
-              About
-            </Link>
-
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`text-sm transition-colors ${
+                  isActive(item.path)
+                    ? "text-primary font-medium"
+                    : "text-gray-700 hover:text-primary"
+                }`}
+                data-testid={`link-${item.name.toLowerCase().replace(' ', '-')}`}
+              >
+                {item.name}
+              </Link>
+            ))}
+            
             {/* Events Dropdown */}
             <div className="relative group">
               <button
@@ -93,41 +85,7 @@ const Navigation = () => {
                 </div>
               </div>
             </div>
-
-            <Link
-              href="/resources"
-              className={`text-sm transition-colors ${
-                isActive("/resources")
-                  ? "text-primary font-medium"
-                  : "text-gray-700 hover:text-primary"
-              }`}
-              data-testid="link-resources"
-            >
-              Resources
-            </Link>
-            <Link
-              href="/sponsors"
-              className={`text-sm transition-colors ${
-                isActive("/sponsors")
-                  ? "text-primary font-medium"
-                  : "text-gray-700 hover:text-primary"
-              }`}
-              data-testid="link-sponsors"
-            >
-              Sponsors
-            </Link>
-            <Link
-              href="/contact"
-              className={`text-sm transition-colors ${
-                isActive("/contact")
-                  ? "text-primary font-medium"
-                  : "text-gray-700 hover:text-primary"
-              }`}
-              data-testid="link-contact"
-            >
-              Contact
-            </Link>
-
+            
             <Link
               href={joinClubItem.path}
               className="bg-primary text-primary-foreground px-6 py-2.5 rounded-lg font-semibold border-2 border-[#FFD700] hover:bg-primary/90 hover:shadow-lg transition-all duration-300"
@@ -149,31 +107,22 @@ const Navigation = () => {
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden py-4 space-y-4 bg-white">
-            <Link
-              href="/"
-              className={`block py-2 text-sm transition-colors ${
-                isActive("/")
-                  ? "text-primary font-medium"
-                  : "text-gray-700 hover:text-primary"
-              }`}
-              onClick={() => setIsOpen(false)}
-              data-testid="mobile-link-home"
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className={`block py-2 text-sm transition-colors ${
-                isActive("/about")
-                  ? "text-primary font-medium"
-                  : "text-gray-700 hover:text-primary"
-              }`}
-              onClick={() => setIsOpen(false)}
-              data-testid="mobile-link-about"
-            >
-              About
-            </Link>
-
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`block py-2 text-sm transition-colors ${
+                  isActive(item.path)
+                    ? "text-primary font-medium"
+                    : "text-gray-700 hover:text-primary"
+                }`}
+                onClick={() => setIsOpen(false)}
+                data-testid={`mobile-link-${item.name.toLowerCase().replace(' ', '-')}`}
+              >
+                {item.name}
+              </Link>
+            ))}
+            
             {/* Events Submenu for Mobile */}
             <div className="space-y-2">
               <div className={`py-2 text-sm font-medium ${
@@ -199,44 +148,7 @@ const Navigation = () => {
                 ))}
               </div>
             </div>
-
-            <Link
-              href="/resources"
-              className={`block py-2 text-sm transition-colors ${
-                isActive("/resources")
-                  ? "text-primary font-medium"
-                  : "text-gray-700 hover:text-primary"
-              }`}
-              onClick={() => setIsOpen(false)}
-              data-testid="mobile-link-resources"
-            >
-              Resources
-            </Link>
-            <Link
-              href="/sponsors"
-              className={`block py-2 text-sm transition-colors ${
-                isActive("/sponsors")
-                  ? "text-primary font-medium"
-                  : "text-gray-700 hover:text-primary"
-              }`}
-              onClick={() => setIsOpen(false)}
-              data-testid="mobile-link-sponsors"
-            >
-              Sponsors
-            </Link>
-            <Link
-              href="/contact"
-              className={`block py-2 text-sm transition-colors ${
-                isActive("/contact")
-                  ? "text-primary font-medium"
-                  : "text-gray-700 hover:text-primary"
-              }`}
-              onClick={() => setIsOpen(false)}
-              data-testid="mobile-link-contact"
-            >
-              Contact
-            </Link>
-
+            
             <Link
               href={joinClubItem.path}
               className="block bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold border-2 border-[#FFD700] hover:bg-primary/90 transition-all duration-300 text-center mt-4"

@@ -16,7 +16,6 @@ import Membership from "./pages/Membership";
 import Resources from "./pages/Resources";
 import Sponsors from "./pages/Sponsors";
 import Contact from "./pages/Contact";
-import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -37,7 +36,6 @@ const App = () => (
             <Route path="/resources" component={Resources} />
             <Route path="/sponsors" component={Sponsors} />
             <Route path="/contact" component={Contact} />
-            <Route path="/admin" component={Admin} />
             <Route component={NotFound} />
           </Switch>
         </Layout>

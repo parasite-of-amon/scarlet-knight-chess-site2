@@ -149,7 +149,7 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string | number; data: Partial<InsertUnifiedEvent> }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertUnifiedEvent> }) => {
       return apiRequest(`/api/events/unified/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(data),

@@ -56,7 +56,7 @@ const Sponsors = () => {
   });
 
   const addSponsorMutation = useMutation({
-    mutationFn: async (data: { name: string; logoPath: string | null; website?: string; tier?: string; order?: number }) => {
+    mutationFn: async (data: { name: string; logoPath: string | null }) => {
       return await apiRequest('/api/sponsors', {
         method: 'POST',
         body: JSON.stringify(data),
@@ -81,7 +81,7 @@ const Sponsors = () => {
   });
 
   const updateSponsorMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string | number; data: Partial<{ name: string; logoPath: string | null; website?: string; tier?: string; order?: number }> }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<{ name: string; logoPath: string | null }> }) => {
       return await apiRequest(`/api/sponsors/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(data),
@@ -106,7 +106,7 @@ const Sponsors = () => {
   });
 
   const deleteSponsorMutation = useMutation({
-    mutationFn: async (id: string | number) => {
+    mutationFn: async (id: number) => {
       return await apiRequest(`/api/sponsors/${id}`, {
         method: 'DELETE',
       });
@@ -130,11 +130,11 @@ const Sponsors = () => {
   });
 
   const uploadFlyerMutation = useMutation({
-    mutationFn: async (pdfUrl: string) => {
+    mutationFn: async (pdfPath: string) => {
       return await apiRequest('/api/sponsor-flyer', {
         method: 'POST',
         body: JSON.stringify({
-          pdfUrl,
+          pdfPath,
           uploadedAt: new Date().toISOString(),
         }),
       });
@@ -439,7 +439,7 @@ const Sponsors = () => {
                         variant="outline"
                         onClick={() => {
                           const link = document.createElement('a');
-                          link.href = sponsorFlyer.pdfUrl;
+                          link.href = sponsorFlyer.pdfPath;
                           link.download = 'sponsor-flyer.pdf';
                           link.click();
                         }}
@@ -460,7 +460,7 @@ const Sponsors = () => {
                     </div>
                     <div className="mt-6 border rounded-lg overflow-hidden" style={{ height: '500px' }}>
                       <iframe
-                        src={sponsorFlyer.pdfUrl}
+                        src={sponsorFlyer.pdfPath}
                         className="w-full h-full"
                         title="Sponsor Flyer PDF"
                         data-testid="iframe-flyer-preview"
@@ -489,7 +489,7 @@ const Sponsors = () => {
                     <Button
                       onClick={() => {
                         const link = document.createElement('a');
-                        link.href = sponsorFlyer.pdfUrl;
+                        link.href = sponsorFlyer.pdfPath;
                         link.download = 'sponsor-flyer.pdf';
                         link.click();
                       }}
@@ -502,7 +502,7 @@ const Sponsors = () => {
                     </Button>
                     <div className="mt-6 border rounded-lg overflow-hidden" style={{ height: '500px' }}>
                       <iframe
-                        src={sponsorFlyer.pdfUrl}
+                        src={sponsorFlyer.pdfPath}
                         className="w-full h-full"
                         title="Sponsor Flyer PDF"
                         data-testid="iframe-flyer-preview-public"
