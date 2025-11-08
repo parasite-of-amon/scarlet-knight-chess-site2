@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ImagePlus, X, Loader2, Plus, Trash2 } from "lucide-react";
+import { ImagePlus, X, Loader2, Trophy } from "lucide-react";
 import { toast } from "sonner";
 import { compressMultipleImages } from "@/lib/imageService";
 import { useMutation } from "@tanstack/react-query";
@@ -37,7 +37,6 @@ import {
   insertUnifiedEventFormSchema,
   type InsertUnifiedEvent,
   type UnifiedEvent,
-  type WinnerInput,
 } from "@shared/schema";
 import { parse, isBefore, startOfDay } from "date-fns";
 
@@ -51,6 +50,8 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [originalImages, setOriginalImages] = useState<string[]>([]);
+  const [winnerImage, setWinnerImage] = useState<string | null>(null);
+  const [winnerImageFile, setWinnerImageFile] = useState<File | null>(null);
   const isEditMode = !!event;
 
   const form = useForm<z.infer<typeof insertUnifiedEventFormSchema>>({
@@ -67,7 +68,7 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
       participants: "",
       rounds: "",
       rating: "",
-      winners: [],
+      winners: undefined,
       registrationLink: "",
       registrationLinkLabel: "",
       infoLink: "",
@@ -75,11 +76,6 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
       externalLink: "",
       externalLinkLabel: "",
     },
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "winners",
   });
 
   useEffect(() => {
@@ -98,13 +94,10 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
         setOriginalImages([]);
       }
 
-      let parsedWinners: WinnerInput[] = [];
       if (event.winners) {
-        try {
-          parsedWinners = JSON.parse(event.winners);
-        } catch (e) {
-          parsedWinners = [];
-        }
+        setWinnerImage(event.winners);
+      } else {
+        setWinnerImage(null);
       }
 
       form.reset({
@@ -119,7 +112,7 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
         participants: event.participants || "",
         rounds: event.rounds || "",
         rating: event.rating || "",
-        winners: parsedWinners,
+        winners: event.winners || undefined,
         registrationLink: event.registrationLink || "",
         registrationLinkLabel: event.registrationLinkLabel || "",
         infoLink: event.infoLink || "",
@@ -196,10 +189,29 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
     setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
+  const handleWinnerImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setWinnerImage(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+    setWinnerImageFile(file);
+  };
+
+  const removeWinnerImage = () => {
+    setWinnerImage(null);
+    setWinnerImageFile(null);
+  };
+
   const resetForm = () => {
     setSelectedImages([]);
     setImagePreviews([]);
     setOriginalImages([]);
+    setWinnerImage(null);
+    setWinnerImageFile(null);
     form.reset({
       title: "",
       date: "",
@@ -212,7 +224,7 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
       participants: "",
       rounds: "",
       rating: "",
-      winners: [],
+      winners: undefined,
       registrationLink: "",
       registrationLinkLabel: "",
       infoLink: "",
@@ -266,9 +278,6 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
     try {
       const imagePaths = await processImages();
 
-      const winnersData = (data.winners || []).filter(w => w.place && w.name);
-      const winnersJson = winnersData.length > 0 ? JSON.stringify(winnersData) : undefined;
-
       const payload: InsertUnifiedEvent = {
         title: data.title,
         date: data.date,
@@ -281,7 +290,7 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
         participants: data.participants || undefined,
         rounds: data.rounds || undefined,
         rating: data.rating || undefined,
-        winners: winnersJson,
+        winners: winnerImage || undefined,
         registrationLink: data.registrationLink || undefined,
         registrationLinkLabel: data.registrationLinkLabel || undefined,
         infoLink: data.infoLink || undefined,
@@ -539,92 +548,59 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
               />
             </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <FormLabel>Winners (Optional)</FormLabel>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => append({ place: "", name: "", score: "" })}
-                  data-testid="button-add-winner"
+            <div className="space-y-2">
+              <FormLabel className="flex items-center gap-2">
+                <Trophy className="w-4 h-4" />
+                Winners Image (Optional)
+              </FormLabel>
+              <p className="text-sm text-muted-foreground">
+                Upload an image showing the winners, podium, or results table
+              </p>
+              <div className="border-2 border-dashed rounded-lg p-6 text-center">
+                <input
+                  type="file"
+                  id="winner-image"
+                  accept="image/*"
+                  onChange={handleWinnerImageChange}
+                  className="hidden"
+                  data-testid="input-winner-image"
+                />
+                <label
+                  htmlFor="winner-image"
+                  className="cursor-pointer flex flex-col items-center gap-2"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Winner
-                </Button>
+                  <Trophy className="w-12 h-12 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
+                    Click to upload winners image
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    PNG, JPG up to 5MB
+                  </span>
+                </label>
               </div>
 
-              {fields.length > 0 && (
-                <div className="space-y-3 border rounded-lg p-4 bg-secondary/20">
-                  {fields.map((field, index) => (
-                    <div key={field.id} className="grid grid-cols-[1fr_2fr_1fr_auto] gap-2">
-                      <FormField
-                        control={form.control}
-                        name={`winners.${index}.place`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-xs">Place</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="1st"
-                                {...field}
-                                data-testid={`input-winner-${index}-place`}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name={`winners.${index}.name`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-xs">Name</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Winner name"
-                                {...field}
-                                data-testid={`input-winner-${index}-name`}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name={`winners.${index}.score`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-xs">Score</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="5.0"
-                                {...field}
-                                value={field.value || ""}
-                                data-testid={`input-winner-${index}-score`}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormItem>
-                        <FormLabel className="text-xs opacity-0">Remove</FormLabel>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => remove(index)}
-                          className="h-10"
-                          data-testid={`button-remove-winner-${index}`}
-                        >
-                          <Trash2 className="w-4 h-4 text-destructive" />
-                        </Button>
-                      </FormItem>
-                    </div>
-                  ))}
+              {winnerImage && (
+                <div className="relative group border rounded-lg overflow-hidden">
+                  <img
+                    src={winnerImage}
+                    alt="Winners"
+                    className="w-full h-64 object-cover"
+                    data-testid="img-winner-preview"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeWinnerImage}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    data-testid="button-remove-winner-image"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
+                    <p className="text-white text-sm font-medium flex items-center gap-2">
+                      <Trophy className="w-4 h-4" />
+                      Winners Image
+                    </p>
+                  </div>
                 </div>
               )}
             </div>

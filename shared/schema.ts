@@ -123,17 +123,7 @@ export const insertPastEventSchema = createInsertSchema(pastEvents).omit({ id: t
 export const insertPastEventWinnerSchema = createInsertSchema(pastEventWinners).omit({ id: true });
 export const insertCalendarEventSchema = createInsertSchema(calendarEvents).omit({ id: true });
 
-const winnerSchema = z.object({
-  place: z.string(),
-  name: z.string(),
-  score: z.string().optional(),
-});
-
-export const insertUnifiedEventFormSchema = insertUnifiedEventSchema
-  .omit({ winners: true })
-  .extend({
-    winners: z.array(winnerSchema).optional(),
-  });
+export const insertUnifiedEventFormSchema = insertUnifiedEventSchema;
 
 export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
 export type InsertUnifiedEvent = z.infer<typeof insertUnifiedEventSchema>;
@@ -158,10 +148,4 @@ export type CalendarEvent = typeof calendarEvents.$inferSelect;
 
 export type PastEventWithWinners = PastEvent & {
   winners: PastEventWinner[];
-};
-
-export type WinnerInput = {
-  place: string;
-  name: string;
-  score?: string;
 };
