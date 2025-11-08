@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar, MapPin, Plus, Trash2, Edit } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useMemo } from "react";
@@ -226,6 +226,9 @@ const UpcomingEvents = () => {
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="font-serif text-3xl">{selectedEvent?.title}</DialogTitle>
+            <DialogDescription>
+              View detailed information about this upcoming event.
+            </DialogDescription>
           </DialogHeader>
           
           {selectedEvent && (

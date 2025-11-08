@@ -5,7 +5,7 @@ import { Link } from "wouter";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { type UnifiedEvent, type WinnerInput } from "@shared/schema";
+import { type UnifiedEvent } from "@shared/schema";
 import { UnifiedEventModal } from "@/components/UnifiedEventModal";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { toast } from "sonner";
@@ -125,7 +125,7 @@ const PastEvents = () => {
           <div className="space-y-8 max-w-4xl mx-auto">
             {pastEvents.map((event) => {
               const eventImages = event.imagePaths ? JSON.parse(event.imagePaths) : [];
-              const winners: WinnerInput[] = event.winners ? JSON.parse(event.winners) : [];
+              const winnersImage = event.winners || null;
               return (
                 <Card key={event.id} className="border-2 hover:border-scarlet transition-colors" data-testid={`card-past-event-${event.id}`}>
                   <CardContent className="p-8">
@@ -161,19 +161,21 @@ const PastEvents = () => {
                       </div>
                     </div>
 
-                    {winners.length > 0 && (
-                      <div className="bg-secondary rounded-lg p-6 mb-6">
-                        <h4 className="font-serif text-lg font-bold mb-4 flex items-center gap-2">
-                          <Trophy className="w-5 h-5 text-primary" />
-                          Winners
-                        </h4>
-                        <div className="space-y-2">
-                          {winners.map((winner, idx) => (
-                            <div key={idx} className="flex justify-between items-center">
-                              <span className="font-medium">{winner.place}: {winner.name}</span>
-                              {winner.score && <span className="text-primary font-bold">{winner.score}</span>}
-                            </div>
-                          ))}
+                    {winnersImage && (
+                      <div className="bg-secondary rounded-lg overflow-hidden mb-6">
+                        <div className="p-4 border-b border-border">
+                          <h4 className="font-serif text-lg font-bold flex items-center gap-2">
+                            <Trophy className="w-5 h-5 text-primary" />
+                            Winners
+                          </h4>
+                        </div>
+                        <div className="relative">
+                          <img
+                            src={winnersImage}
+                            alt={`${event.title} Winners`}
+                            className="w-full h-auto object-cover"
+                            data-testid={`img-winners-${event.id}`}
+                          />
                         </div>
                       </div>
                     )}
