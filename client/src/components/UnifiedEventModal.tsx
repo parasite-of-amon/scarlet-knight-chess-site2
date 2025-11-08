@@ -33,7 +33,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
-  insertUnifiedEventSchema,
+  insertUnifiedEventFormSchema,
   type InsertUnifiedEvent,
   type UnifiedEvent,
   type WinnerInput,
@@ -46,22 +46,14 @@ interface UnifiedEventModalProps {
   event?: UnifiedEvent;
 }
 
-const formSchema = insertUnifiedEventSchema.extend({
-  winners: z.array(z.object({
-    place: z.string(),
-    name: z.string(),
-    score: z.string().optional(),
-  })).optional(),
-});
-
 export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventModalProps) => {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [originalImages, setOriginalImages] = useState<string[]>([]);
   const isEditMode = !!event;
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof insertUnifiedEventFormSchema>>({
+    resolver: zodResolver(insertUnifiedEventFormSchema),
     defaultValues: {
       title: "",
       date: "",
@@ -265,7 +257,7 @@ export const UnifiedEventModal = ({ open, onOpenChange, event }: UnifiedEventMod
     return null;
   };
 
-  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+  const handleSubmit = async (data: z.infer<typeof insertUnifiedEventFormSchema>) => {
     try {
       const imagePaths = await processImages();
       

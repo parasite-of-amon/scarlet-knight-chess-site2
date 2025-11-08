@@ -123,8 +123,17 @@ export const insertPastEventSchema = createInsertSchema(pastEvents).omit({ id: t
 export const insertPastEventWinnerSchema = createInsertSchema(pastEventWinners).omit({ id: true });
 export const insertCalendarEventSchema = createInsertSchema(calendarEvents).omit({ id: true });
 
+export const insertUnifiedEventFormSchema = insertUnifiedEventSchema.omit({ winners: true }).extend({
+  winners: z.array(z.object({
+    place: z.string(),
+    name: z.string(),
+    score: z.string().optional(),
+  })).optional(),
+});
+
 export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
 export type InsertUnifiedEvent = z.infer<typeof insertUnifiedEventSchema>;
+export type InsertUnifiedEventForm = z.infer<typeof insertUnifiedEventFormSchema>;
 export type InsertSponsor = z.infer<typeof insertSponsorSchema>;
 export type InsertSponsorFlyer = z.infer<typeof insertSponsorFlyerSchema>;
 export type InsertAboutContent = z.infer<typeof insertAboutContentSchema>;
