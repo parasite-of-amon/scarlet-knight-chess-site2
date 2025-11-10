@@ -36,6 +36,7 @@ import type { Event } from '@/types/database';
 import type { User } from '@supabase/supabase-js';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 
 interface AdminDashboardClientProps {
   initialEvents: Event[];
@@ -65,6 +66,8 @@ export function AdminDashboardClient({ initialEvents, user }: AdminDashboardClie
     registration_label: '',
     info_link: '',
     info_label: '',
+    images: [] as string[],
+    winners_image: '',
   });
 
   const handleLogout = async () => {
@@ -92,6 +95,8 @@ export function AdminDashboardClient({ initialEvents, user }: AdminDashboardClie
       registration_label: '',
       info_link: '',
       info_label: '',
+      images: [],
+      winners_image: '',
     });
     setDialogOpen(true);
   };
@@ -114,6 +119,8 @@ export function AdminDashboardClient({ initialEvents, user }: AdminDashboardClie
       registration_label: event.registration_label || '',
       info_link: event.info_link || '',
       info_label: event.info_label || '',
+      images: event.images || [],
+      winners_image: event.winners_image || '',
     });
     setDialogOpen(true);
   };
@@ -141,6 +148,8 @@ export function AdminDashboardClient({ initialEvents, user }: AdminDashboardClie
         registration_label: formData.registration_label || null,
         info_link: formData.info_link || null,
         info_label: formData.info_label || null,
+        images: formData.images.length > 0 ? formData.images : null,
+        winners_image: formData.winners_image || null,
       };
 
       if (editingEvent) {
@@ -407,6 +416,34 @@ export function AdminDashboardClient({ initialEvents, user }: AdminDashboardClie
                     />
                   </div>
                 </div>
+
+                {/* Event Images */}
+                <div className="space-y-2">
+                  <Label>Event Images (max 5)</Label>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Upload images for the event gallery. First image will be used as the main cover image.
+                  </p>
+                  <ImageUpload
+                    value={formData.images}
+                    onChange={(urls) => setFormData({ ...formData, images: urls })}
+                    maxImages={5}
+                  />
+                </div>
+
+                {/* Winners Image (for past events) */}
+                {formData.status === 'past' && (
+                  <div className="space-y-2">
+                    <Label>Winners Photo</Label>
+                    <p className="text-xs text-gray-500 mb-2">
+                      Upload a photo of the tournament winners. This will be shown on the event detail page.
+                    </p>
+                    <ImageUpload
+                      value={formData.winners_image ? [formData.winners_image] : []}
+                      onChange={(urls) => setFormData({ ...formData, winners_image: urls[0] || '' })}
+                      maxImages={1}
+                    />
+                  </div>
+                )}
 
                 <div className="flex justify-end gap-3 pt-4">
                   <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
