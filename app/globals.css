@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Rutgers Brand Colors */
+    --scarlet: 204 100% 40%; /* #CC0033 */
+    --gray: 210 8% 46%; /* #5F6A72 */
+    --off-white: 0 0% 97%; /* #F7F7F8 */
+    --black: 0 0% 0%; /* #000000 */
+
+    /* Design System */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 15%;
+
+    --primary: 343 100% 32%; /* Scarlet #CC0033 */
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 343 15% 95%;
+    --secondary-foreground: 0 0% 15%;
+
+    --muted: 343 15% 95%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 343 100% 32%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 343 15% 90%;
+    --input: 343 15% 90%;
+    --ring: 343 100% 32%;
+
+    --radius: 1rem; /* 16px for soft rounded cards */
+  }
+
+  .dark {
+    --background: 0 0% 10%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 15%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 15%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 343 100% 32%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 343 100% 32%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 343 100% 32%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+
+  /* Ensure proper line spacing for readability */
+  p {
+    @apply leading-relaxed; /* 150% line height */
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply leading-tight; /* 120% line height */
+  }
+}
+
+@layer components {
+  /* Event card with soft shadows and hover effects */
+  .event-card {
+    @apply rounded-2xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow duration-300;
+  }
+
+  /* Status pill with Scarlet outline */
+  .status-pill {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border-2;
+  }
+
+  .status-pill-upcoming {
+    @apply border-primary text-primary bg-primary/5;
+  }
+
+  .status-pill-past {
+    @apply border-gray-400 text-gray-600 bg-gray-50;
+  }
+
+  .status-pill-live {
+    @apply border-green-500 text-green-700 bg-green-50;
+  }
+
+  /* 16:9 aspect ratio container */
+  .aspect-16-9 {
+    @apply aspect-[16/9];
+  }
+
+  /* Hover lift effect for cards */
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+  }
+
+  /* Focus visible ring for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
+  }
+
+  /* Button with Scarlet primary color */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 focus-ring px-6 py-3 rounded-lg font-semibold transition-colors;
+  }
+
+  /* Button with outline style */
+  .btn-outline {
+    @apply border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground focus-ring px-6 py-3 rounded-lg font-semibold transition-colors;
+  }
+}
+
+@layer utilities {
+  /* Text contrast utilities */
+  .text-contrast {
+    @apply drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)];
+  }
+
+  /* Minimum touch target size for mobile accessibility */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}
