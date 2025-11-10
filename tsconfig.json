@@ -26,5 +26,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "client", "server", "shared", "dist", "vite.config.ts", "vite.config.ts.timestamp-*", "*.config.ts", "eslint.config.js", "test-date-categorization.js"]
+  "exclude": ["node_modules"]
 }
