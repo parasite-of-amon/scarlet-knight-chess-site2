@@ -10,7 +10,7 @@ export default async function CalendarPage() {
   const events = await getEvents();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       {/* Header */}
       <section className="bg-primary text-primary-foreground py-16">
         <div className="container mx-auto px-4">

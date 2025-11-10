@@ -72,7 +72,7 @@ export function EventDetailClient({ event }: EventDetailClientProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       {/* Hero Image */}
       <div className="relative h-[400px] bg-gray-900">
         <Image

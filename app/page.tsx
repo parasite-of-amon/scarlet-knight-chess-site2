@@ -5,7 +5,7 @@ import { Calendar, Trophy, Users } from 'lucide-react';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen">
+    <div>
       {/* Hero Section */}
       <section className="relative bg-black text-white py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60 z-10" />

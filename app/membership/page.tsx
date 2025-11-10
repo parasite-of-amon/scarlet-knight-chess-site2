@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function MembershipPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       {/* Hero Section */}
       <section className="bg-primary text-primary-foreground py-20">
         <div className="container mx-auto px-4 text-center">

@@ -213,7 +213,7 @@ export function AdminDashboardClient({ initialEvents, user }: AdminDashboardClie
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       {/* Header */}
       <div className="bg-primary text-primary-foreground py-8">
         <div className="container mx-auto px-4">
